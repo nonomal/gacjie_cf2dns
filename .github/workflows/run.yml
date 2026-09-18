@@ -3,7 +3,7 @@ name: 'GitHub Actions CloudFlare2DNSPod Bot'
 on:
   push:
     branches: 
-      - master
+      - main
   schedule:
     - cron: '*/16 * * * *'
 
@@ -16,12 +16,13 @@ jobs:
       - name: 'Set up Python'
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: '3.12'
       - name: 'Install dependencies'
         run: if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: 'run cf2dns'
         env:
           CONFIG: ${{ secrets.CONFIG }}
           DOMAINS: ${{ secrets.DOMAINS }}
+          #PROVIDER 只在用自定义优选源时才需要配；没设时自动读仓库里的 config/data_provider.json
           PROVIDER: ${{ secrets.PROVIDER }}
-        run: python cf2dns_actions.py
+        run: python cf2dns.py --env
